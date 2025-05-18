@@ -7,6 +7,9 @@
   <meta name="description" content="สถานีฟังธรรมออนไลน์ รวมเสียงธรรมะแบบเลือกฟังได้ เหมาะสำหรับผู้ปฏิบัติภาวนา และผู้สนใจในคำสอนของพระพุทธเจ้า">
   <meta name="keywords" content="ธรรมะ, ฟังธรรมะ, dhamma radio, เสียงธรรมะ, สถานีธรรมะ, dhammasutta">
   <meta name="author" content="Dhamma-Sutta.com">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#fffaf0">
+  <link rel="icon" href="icon.png">
   <style>
     body {
       font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
@@ -112,6 +115,12 @@
   </div>
 
   <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+
     let playlists;
     let currentTracks = [];
 
@@ -120,7 +129,6 @@
     const playlistSelect = document.getElementById("playlistSelect");
     const searchInput = document.getElementById("searchInput");
 
-    // โหลด playlist
     fetch("playlists.json")
       .then(response => response.json())
       .then(data => {
@@ -132,7 +140,6 @@
           playlistSelect.appendChild(option);
         });
 
-        // โหลดเสียงล่าสุด
         const lastTrack = localStorage.getItem("lastTrackUrl");
         if (lastTrack) {
           audio.src = lastTrack;
