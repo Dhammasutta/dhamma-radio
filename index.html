@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>สถานีฟังธรรม – dhamma-radio</title>
+  <style>
+    body {
+      font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
+      background: #fffaf0;
+      color: #5a3e1b;
+      padding: 20px;
+      line-height: 1.6;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: #fffef7;
+      padding: 25px;
+      border: 1px solid #d2b48c;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1, h2 {
+      text-align: center;
+      color: #8B0000;
+    }
+    .playlist-select {
+      margin: 20px 0;
+      font-size: 18px;
+      width: 100%;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #c9a77d;
+    }
+    .track-list {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+    .track-item {
+      margin: 8px 0;
+    }
+    .track-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #fdf6e3;
+      border: 1px solid #d5b48c;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 18px;
+      color: #5a3e1b;
+      cursor: pointer;
+    }
+    .track-button:hover {
+      background: #f7eacc;
+    }
+    audio {
+      width: 100%;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📻 สถานีฟังธรรม – dhamma-radio</h1>
+
+    <select id="playlistSelect" class="playlist-select">
+      <option value="">เลือกชุดธรรมะ...</option>
+    </select>
+
+    <ul id="trackList" class="track-list"></ul>
+
+    <audio id="audioPlayer" controls>
+      <source src="" type="audio/mpeg" />
+      เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+    </audio>
+  </div>
+
+  <script>
+    let playlists;
+
+    fetch("playlists.json")
+      .then(response => response.json())
+      .then(data => {
+        playlists = data;
+        const select = document.getElementById("playlistSelect");
+        Object.keys(playlists).forEach(name => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          select.appendChild(option);
+        });
+      });
+
+    document.getElementById("playlistSelect").addEventListener("change", function () {
+      const selected = this.value;
+      const trackList = document.getElementById("trackList");
+      trackList.innerHTML = "";
+      const audio = document.getElementById("audioPlayer");
+      audio.src = "";
+
+      if (selected && playlists[selected]) {
+        playlists[selected].forEach(track => {
+          const li = document.createElement("li");
+          li.className = "track-item";
+          const btn = document.createElement("button");
+          btn.className = "track-button";
+          btn.textContent = `▶️ ${track.title}`;
+          btn.onclick = () => {
+            audio.src = track.url;
+            audio.play();
+          };
+          li.appendChild(btn);
+          trackList.appendChild(li);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
 
