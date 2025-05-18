@@ -9,8 +9,7 @@
   <meta name="author" content="Dhamma-Sutta.com">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#fffaf0">
-  <link rel="icon" href="https://github.com/Dhammasutta/dhamma-radio/blob/main/images/icon-192x192.png?raw=true">
-
+  <link rel="icon" href="images/icon.png">
   <style>
     body {
       font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
@@ -32,13 +31,30 @@
       text-align: center;
       color: #8B0000;
     }
-    .playlist-select, .search-input {
+    .search-input {
+      font-size: 18px;
+      width: 50%;
+      padding: 10px 14px;
+      border-radius: 24px;
+      border: 1px solid #4285F4;
+      background-color: #f0f7ff;
+      margin: 0 auto 15px;
+      display: block;
+      color: #333;
+    }
+    .playlist-select {
       font-size: 18px;
       width: 100%;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid #c9a77d;
       margin-bottom: 15px;
+    }
+    .stat-info {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 20px;
     }
     .track-list {
       list-style: none;
@@ -103,6 +119,8 @@
       <option value="">เลือกชุดธรรมะ...</option>
     </select>
 
+    <div id="statInfo" class="stat-info">กำลังโหลดรายการ...</div>
+
     <ul id="trackList" class="track-list"></ul>
 
     <audio id="audioPlayer" controls>
@@ -129,17 +147,22 @@
     const trackList = document.getElementById("trackList");
     const playlistSelect = document.getElementById("playlistSelect");
     const searchInput = document.getElementById("searchInput");
+    const statInfo = document.getElementById("statInfo");
 
     fetch("playlists.json")
       .then(response => response.json())
       .then(data => {
         playlists = data;
+        let totalTracks = 0;
         Object.keys(playlists).forEach(name => {
           const option = document.createElement("option");
           option.value = name;
           option.textContent = name;
           playlistSelect.appendChild(option);
+          totalTracks += playlists[name].length;
         });
+
+        statInfo.textContent = `🔸 ขณะนี้มีตอนธรรมะทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
 
         const lastTrack = localStorage.getItem("lastTrackUrl");
         if (lastTrack) {
