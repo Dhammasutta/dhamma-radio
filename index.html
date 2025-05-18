@@ -28,13 +28,13 @@
       text-align: center;
       color: #8B0000;
     }
-    .playlist-select {
-      margin: 20px 0;
+    .playlist-select, .search-input {
       font-size: 18px;
       width: 100%;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid #c9a77d;
+      margin-bottom: 15px;
     }
     .track-list {
       list-style: none;
@@ -43,10 +43,12 @@
     }
     .track-item {
       margin: 8px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
     .track-button {
-      display: block;
-      width: 100%;
+      flex: 1;
       padding: 10px;
       background: #fdf6e3;
       border: 1px solid #d5b48c;
@@ -55,9 +57,18 @@
       font-size: 18px;
       color: #5a3e1b;
       cursor: pointer;
+      margin-right: 10px;
     }
     .track-button:hover {
       background: #f7eacc;
+    }
+    .share-button {
+      font-size: 16px;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #f5f5f5;
+      cursor: pointer;
     }
     audio {
       width: 100%;
@@ -82,6 +93,8 @@
   <div class="container">
     <h1>📻 สถานีฟังธรรม – dhamma-radio</h1>
 
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 ค้นหาชื่อตอน..." />
+
     <select id="playlistSelect" class="playlist-select">
       <option value="">เลือกชุดธรรมะ...</option>
     </select>
@@ -100,43 +113,75 @@
 
   <script>
     let playlists;
+    let currentTracks = [];
 
+    const audio = document.getElementById("audioPlayer");
+    const trackList = document.getElementById("trackList");
+    const playlistSelect = document.getElementById("playlistSelect");
+    const searchInput = document.getElementById("searchInput");
+
+    // โหลด playlist
     fetch("playlists.json")
       .then(response => response.json())
       .then(data => {
         playlists = data;
-        const select = document.getElementById("playlistSelect");
         Object.keys(playlists).forEach(name => {
           const option = document.createElement("option");
           option.value = name;
           option.textContent = name;
-          select.appendChild(option);
+          playlistSelect.appendChild(option);
         });
+
+        // โหลดเสียงล่าสุด
+        const lastTrack = localStorage.getItem("lastTrackUrl");
+        if (lastTrack) {
+          audio.src = lastTrack;
+        }
       });
 
-    document.getElementById("playlistSelect").addEventListener("change", function () {
+    playlistSelect.addEventListener("change", function () {
       const selected = this.value;
-      const trackList = document.getElementById("trackList");
       trackList.innerHTML = "";
-      const audio = document.getElementById("audioPlayer");
-      audio.src = "";
-
-      if (selected && playlists[selected]) {
-        playlists[selected].forEach(track => {
-          const li = document.createElement("li");
-          li.className = "track-item";
-          const btn = document.createElement("button");
-          btn.className = "track-button";
-          btn.textContent = `▶️ ${track.title}`;
-          btn.onclick = () => {
-            audio.src = track.url;
-            audio.play();
-          };
-          li.appendChild(btn);
-          trackList.appendChild(li);
-        });
-      }
+      currentTracks = playlists[selected] || [];
+      showFilteredTracks(searchInput.value);
     });
+
+    searchInput.addEventListener("input", () => {
+      showFilteredTracks(searchInput.value);
+    });
+
+    function showFilteredTracks(keyword) {
+      trackList.innerHTML = "";
+      const filtered = currentTracks.filter(track =>
+        track.title.toLowerCase().includes(keyword.toLowerCase())
+      );
+      filtered.forEach(track => {
+        const li = document.createElement("li");
+        li.className = "track-item";
+
+        const btn = document.createElement("button");
+        btn.className = "track-button";
+        btn.textContent = `▶️ ${track.title}`;
+        btn.onclick = () => {
+          audio.src = track.url;
+          audio.play();
+          localStorage.setItem("lastTrackUrl", track.url);
+        };
+
+        const shareBtn = document.createElement("button");
+        shareBtn.className = "share-button";
+        shareBtn.textContent = "🔗 แชร์";
+        shareBtn.onclick = () => {
+          const url = track.url;
+          navigator.clipboard.writeText(url);
+          alert("คัดลอกลิงก์แล้ว: " + url);
+        };
+
+        li.appendChild(btn);
+        li.appendChild(shareBtn);
+        trackList.appendChild(li);
+      });
+    }
   </script>
 </body>
 </html>
