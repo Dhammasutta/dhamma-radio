@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>สถานีธรรมะออนไลน์<br> รายการธรรมบรรยายตามพระไตรปิฎก</title>
+  <title>สถานีธรรมะออนไลน์ - รายการธรรมบรรยายตามพระไตรปิฎก</title>
   <meta name="description" content="สถานีฟังธรรมออนไลน์ รวมเสียงธรรมะแบบเลือกฟังได้ เหมาะสำหรับผู้ปฏิบัติภาวนา และผู้สนใจในคำสอนของพระพุทธเจ้า">
   <meta name="keywords" content="ธรรมะ, ฟังธรรมะ, dhamma radio, เสียงธรรมะ, สถานีธรรมะ, dhammasutta">
   <meta name="author" content="Dhamma-Sutta.com">
@@ -116,28 +116,49 @@
     .footer-link a:hover {
       text-decoration: underline;
     }
+    .resume-button {
+      margin-bottom: 15px;
+      padding: 8px 14px;
+      border-radius: 6px;
+      background: #fef2cc;
+      border: 1px solid #e0c76f;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .resume-button:hover {
+      background: #fce7aa;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>📻 สถานีธรรมะออนไลน์</h1>
 
+    <!-- ▶️ ปุ่มเล่นต่อจากตอนล่าสุด -->
+    <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นต่อจากตอนล่าสุด</button>
+
+    <!-- 🔍 ค้นหาตอน -->
     <input type="text" id="searchInput" class="search-input" placeholder="🔍 ค้นหาชื่อตอน..." />
 
+    <!-- 🔽 เลือกชุด -->
     <select id="playlistSelect" class="playlist-select">
       <option value="">เลือกชุดธรรมะ...</option>
     </select>
 
+    <!-- 📊 สถิติ -->
     <div id="statInfo" class="stat-info">กำลังโหลดรายการ...</div>
 
-    <div id="historyBox" class="history-box" style="display: none;"></div>
-
-    <ul id="trackList" class="track-list"></ul>
-
+    <!-- 🎧 เครื่องเล่น -->
     <audio id="audioPlayer" controls>
       <source src="" type="audio/mpeg" />
       เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
     </audio>
+
+    <!-- 🕒 ฟังล่าสุด -->
+    <div id="historyBox" class="history-box" style="display: none;"></div>
+
+    <!-- 📃 รายการตอน -->
+    <ul id="trackList" class="track-list"></ul>
 
     <div class="footer-link">
       <a href="https://www.dhamma-sutta.com" target="_blank">ธรรมสุตตะ Dhamma-Sutta.com</a>
@@ -247,6 +268,16 @@
       historyBox.innerHTML = "<strong>🕒 ฟังล่าสุด:</strong><ul style='padding-left: 20px;'>" +
         history.map(item => `<li><a href="${item.url}" target="_blank">${item.title}</a></li>`).join('') +
         "</ul>";
+    }
+
+    function resumeLastTrack() {
+      const lastTrack = localStorage.getItem("lastTrackUrl");
+      if (lastTrack) {
+        audio.src = lastTrack;
+        audio.play();
+      } else {
+        alert("ยังไม่มีรายการที่ฟังล่าสุด");
+      }
     }
   </script>
 </body>
