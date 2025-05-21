@@ -154,7 +154,7 @@
 
 <!-- ▶️ ปุ่มเล่นต่อจากตอนล่าสุด (ย้ายมาไว้ใต้เครื่องเล่น) -->
 <div style="margin-top: 10px; margin-bottom: 15px;">
-  <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นต่อจากตอนล่าสุด</button>
+  <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นตอนล่าสุดอีกครั้ง</button>
 </div>
 
 <!-- 🕒 ฟังล่าสุด -->
@@ -198,7 +198,7 @@
           totalTracks += playlists[name].length;
         });
 
-        statInfo.textContent = `🔸 ขณะนี้มีตอนธรรมะทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
+        statInfo.textContent = `🔸 ขณะนี้มีธรรมบรรยายทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
 
         const lastTrack = localStorage.getItem("lastTrackUrl");
         if (lastTrack) {
@@ -257,7 +257,7 @@
       let history = JSON.parse(localStorage.getItem("history")) || [];
       history = history.filter(t => t.url !== track.url);
       history.unshift({ title: track.title, url: track.url });
-      if (history.length > 5) history.pop();
+      if (history.length > 1) history.pop();
       localStorage.setItem("history", JSON.stringify(history));
     }
 
