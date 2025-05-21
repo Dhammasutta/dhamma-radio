@@ -1,5 +1,55 @@
+<template id="tempScript">
+  <script>
+    console.log(" "– พระอาจารย์สมบัติ นันทิโก": [
+    {
+      "title": "บทนำ: ธรรมะเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-3.mp3"
+    },
+    {
+      "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-4.mp3"
+    }
+  ],");
+  </script>
+</template>
+
+
+
+
+
+
 {
-  "ชุดที่ ๑: คัมภีร์พุทธวงศ์ – พระอาจารย์สมบัติ นันทิโก": [
+
+"สรรเสริญพระรัตนตรัย – พระอาจารย์สมบัติ นันทิโก": [
+    {
+      "title": "บทนำ: ธรรมะเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-3.mp3"
+    },
+    {
+      "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-4.mp3"
+    }
+  ],
+
+
+
+" – พระอาจารย์สมบัติ นันทิโก": [
+    {
+      "title": "บทนำ: ธรรมะเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-3.mp3"
+    },
+    {
+      "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
+      "url": "https://archive.org/download/sample-audio-4.mp3"
+    }
+  ],
+
+
+
+
+
+
+  "คัมภีร์พุทธวงศ์ – พระอาจารย์สมบัติ นันทิโก": [
    
     {
       "title": "ตอนที่ ๑: รัตนจังกมนกัณฑ์/ แสดงพุทธวงศ์/",
@@ -206,16 +256,7 @@
       "title": "ตอนที่ ๔๑: กัณฑ์ปกิณกะ",
       "url": "https://archive.org/download/dhamma-sutta.com_20250519_0924/%E0%B8%9E%E0%B8%B8%E0%B8%97%E0%B8%98%E0%B8%A7%E0%B8%87%E0%B8%A8%E0%B9%8C%20%E0%B8%95%E0%B8%AD%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%94%E0%B9%91%20%28dhamma-sutta.com%29.mp3"
     }
-  ],
-  "ชุดที่ 2: แสงธรรมในใจ – พระอาจารย์สันติ": [
-    {
-      "title": "บทนำ: ธรรมะเบื้องต้น",
-      "url": "https://archive.org/download/sample-audio-3.mp3"
-    },
-    {
-      "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
-      "url": "https://archive.org/download/sample-audio-4.mp3"
-    }
   ]
+  
 }
 
