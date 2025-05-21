@@ -1,16 +1,16 @@
 <template id="tempScript">
-  <script>
-    console.log(" "– พระอาจารย์สมบัติ นันทิโก": [
-    {
-      "title": "บทนำ: ธรรมะเบื้องต้น",
-      "url": "https://archive.org/download/sample-audio-3.mp3"
-    },
-    {
-      "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
-      "url": "https://archive.org/download/sample-audio-4.mp3"
-    }
-  ],");
-  </script>
+  {
+    "– พระอาจารย์สมบัติ นันทิโก": [
+      {
+        "title": "บทนำ: ธรรมะเบื้องต้น",
+        "url": "https://archive.org/download/sample-audio-3.mp3"
+      },
+      {
+        "title": "ตอนที่ ๑: วิปัสสนาเบื้องต้น",
+        "url": "https://archive.org/download/sample-audio-4.mp3"
+      }
+    ]
+  },
 </template>
 
 
