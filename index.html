@@ -257,7 +257,7 @@
       let history = JSON.parse(localStorage.getItem("history")) || [];
       history = history.filter(t => t.url !== track.url);
       history.unshift({ title: track.title, url: track.url });
-      if (history.length > 1) history.pop();
+      if (history.length > 3) history.pop();
       localStorage.setItem("history", JSON.stringify(history));
     }
 
