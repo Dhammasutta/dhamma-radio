@@ -1,63 +1,121 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ธรรมสุตตะ | สถานีฟังธรรม</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fffaf0" />
+  <title>📻 สถานีธรรมะออนไลน์ | Dhamma Radio</title>
   <style>
     body {
       margin: 0;
       font-family: sans-serif;
-      background: #fffaf0;
-      padding-bottom: 80px; /* เผื่อที่ให้ audio bar ล่าง */
+      background-color: #fffaf0;
+    }
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem;
+      text-align: center;
     }
     .container {
       padding: 1rem;
+      max-width: 800px;
+      margin: auto;
     }
-    .audio-player-fixed {
+    .search {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    input[type="text"] {
+      width: 50%;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    .playlist {
+      list-style: none;
+      padding: 0;
+    }
+    .playlist li {
+      padding: 0.5rem;
+      border-bottom: 1px solid #ccc;
+      cursor: pointer;
+    }
+    .audio-player {
       position: fixed;
       bottom: 0;
       left: 0;
-      width: 100%;
-      background: #fff;
+      right: 0;
+      background-color: #fff;
       border-top: 1px solid #ccc;
-      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
-      z-index: 1000;
-      padding: 0.5rem;
+      padding: 1rem;
+      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
     }
-    audio {
-      width: 100%;
-      height: 40px;
+    .stat {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #333;
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1>📻 สถานีธรรมะออนไลน์<br>รายการธรรมบรรยายตามพระไตรปิฎก</h1>
+  </header>
   <div class="container">
-    <h1>📻 สถานีฟังธรรมะ</h1>
-    <p>เลือกฟังตอนต่าง ๆ ด้านล่าง</p>
-
-    <!-- ตัวอย่าง playlist -->
-    <ul>
-      <li><a href="#" onclick="playAudio('https://archive.org/download/001-samma-sankappo/001-SammaSankappo.mp3')">ตอนที่ ๑ สัมมาสังกัปโป</a></li>
-      <li><a href="#" onclick="playAudio('https://archive.org/download/002-samma-vaca/002-SammaVaca.mp3')">ตอนที่ ๒ สัมมาวาจา</a></li>
-      <li><a href="#" onclick="playAudio('https://archive.org/download/003-samma-kammanta/003-SammaKammanta.mp3')">ตอนที่ ๓ สัมมากัมมันตะ</a></li>
-    </ul>
+    <div class="search">
+      <input type="text" id="searchBox" placeholder="ค้นหารายการธรรม...">
+    </div>
+    <div class="stat">
+      <span id="totalCount">กำลังโหลด...</span>
+    </div>
+    <ul class="playlist" id="playlist"></ul>
   </div>
 
-  <!-- Player ที่ล่างจอ -->
-  <div class="audio-player-fixed">
-    <audio id="main-player" controls>
-      <source src="" type="audio/mpeg">
-      เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+  <div class="audio-player">
+    <audio id="audioPlayer" controls style="width: 100%">
+      <source id="audioSource" src="" type="audio/mpeg">
+      เบราว์เซอร์ของคุณไม่รองรับเครื่องเล่นเสียง
     </audio>
   </div>
 
   <script>
-    function playAudio(src) {
-      const player = document.getElementById('main-player');
-      player.src = src;
-      player.play();
+    const searchBox = document.getElementById('searchBox');
+    const playlistElement = document.getElementById('playlist');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const audioSource = document.getElementById('audioSource');
+    const totalCount = document.getElementById('totalCount');
+
+    let playlistData = [];
+
+    async function loadPlaylist() {
+      const response = await fetch('playlists.json');
+      playlistData = await response.json();
+      renderPlaylist(playlistData);
+      totalCount.innerText = `จำนวนตอนทั้งหมด ${playlistData.length} ตอน`;
     }
+
+    function renderPlaylist(data) {
+      playlistElement.innerHTML = '';
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.title}`;
+        li.onclick = () => {
+          audioSource.src = item.url;
+          audioPlayer.load();
+          audioPlayer.play();
+        };
+        playlistElement.appendChild(li);
+      });
+    }
+
+    searchBox.addEventListener('input', () => {
+      const keyword = searchBox.value.toLowerCase();
+      const filtered = playlistData.filter(item => item.title.toLowerCase().includes(keyword));
+      renderPlaylist(filtered);
+    });
+
+    loadPlaylist();
   </script>
 </body>
 </html>
