@@ -1,322 +1,53 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>สถานีธรรมะออนไลน์ - รายการธรรมบรรยายตามพระไตรปิฎก</title>
-  <meta name="description" content="สถานีฟังธรรมออนไลน์ รวมเสียงธรรมะแบบเลือกฟังได้ เหมาะสำหรับผู้ปฏิบัติภาวนา และผู้สนใจในคำสอนของพระพุทธเจ้า">
-  <meta name="keywords" content="ธรรมะ, ฟังธรรมะ, dhamma radio, เสียงธรรมะ, สถานีธรรมะ, dhammasutta">
-  <meta name="author" content="Dhamma-Sutta.com">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#fffaf0">
-  <link rel="icon" href="images/icon.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สถานีฟังธรรมะ</title>
   <style>
     body {
-      font-family: "TH Sarabun New", "Sarabun", Tahoma, sans-serif;
-      background: #fffaf0;
-      color: #5a3e1b;
+      margin: 0;
+      padding-bottom: 80px; /* เว้นพื้นที่ให้ player ไม่ทับเนื้อหา */
+      font-family: sans-serif;
+      background-color: #fffaf0;
+    }
+
+    .main-content {
       padding: 20px;
-      line-height: 1.6;
     }
-    .container {
-      max-width: 700px;
-      margin: auto;
-      background: #fffef7;
-      padding: 25px;
-      border: 1px solid #d2b48c;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    h1, h2 {
-      text-align: center;
-      color: #8B0000;
-    }
-    .search-input {
-      font-size: 18px;
-      width: 50%;
-      padding: 10px 14px;
-      border-radius: 24px;
-      border: 1px solid #4285F4;
-      background-color: #f0f7ff;
-      margin: 0 0 15px;
-      display: block;
-      color: #333;
-    }
-    .playlist-select {
-      font-size: 18px;
+
+    .audio-player-fixed {
+      position: fixed;
+      bottom: 0;
+      left: 0;
       width: 100%;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #c9a77d;
-      margin-bottom: 15px;
+      background: #fff;
+      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+      padding: 10px 20px;
+      z-index: 9999;
     }
-    .stat-info {
-      text-align: center;
-      font-size: 14px;
-      color: #888;
-      margin-bottom: 20px;
-    }
-    .history-box {
-      font-size: 16px;
-      color: #444;
-      background: #f5f3eb;
-      border: 1px dashed #bbb;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-    .track-list {
-      list-style: none;
-      padding: 0;
-      margin-top: 20px;
-    }
-    .track-item {
-      margin: 8px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .track-button {
-      flex: 1;
-      padding: 10px;
-      background: #fdf6e3;
-      border: 1px solid #d5b48c;
-      border-radius: 8px;
-      text-align: left;
-      font-size: 18px;
-      color: #5a3e1b;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .track-button:hover {
-      background: #f7eacc;
-    }
-    .share-button {
-      font-size: 16px;
-      padding: 6px 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background: #f5f5f5;
-      cursor: pointer;
-    }
+
     audio {
       width: 100%;
-      margin-top: 25px;
-    }
-    .footer-link {
-      text-align: center;
-      font-size: 14px;
-      color: #999;
-      margin-top: 40px;
-    }
-    .footer-link a {
-      color: #999;
-      text-decoration: none;
-    }
-    .footer-link a:hover {
-      text-decoration: underline;
-    }
-    .resume-button {
-      margin-bottom: 15px;
-      padding: 8px 14px;
-      border-radius: 6px;
-      background: #fef2cc;
-      border: 1px solid #e0c76f;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .resume-button:hover {
-      background: #fce7aa;
     }
   </style>
-
-
-<style>
-  .fixed-player {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #fffaf0;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-    padding: 4px 8px;
-  }
-
-  body {
-    padding-bottom: 60px; /* กันไม่ให้เนื้อหาถูกบังโดย player ด้านล่าง */
-  }
-</style>
-
-
-
-
-
-
-
-
-  
 </head>
 <body>
-  <div class="container">
-    <h1></h1>
 
-    
-    <!-- 🔍 ค้นหาตอน -->
-    <input type="text" id="searchInput" class="search-input" placeholder="🔍 ค้นหาชื่อตอน..." />
-
-    <!-- 🔽 เลือกชุด -->
-    <select id="playlistSelect" class="playlist-select">
-      <option value="">เลือกชุดธรรมะ...</option>
-    </select>
-
-    <!-- 📊 สถิติ -->
-    <div id="statInfo" class="stat-info">กำลังโหลดรายการ...</div>
-
-   <!-- 🎧 เครื่องเล่น -->
-<audio id="audioPlayer" controls>
-  <source src="" type="audio/mpeg" />
-  เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
-</audio>
-
-<!-- ▶️ ปุ่มเล่นต่อจากตอนล่าสุด (ย้ายมาไว้ใต้เครื่องเล่น) -->
-<div style="margin-top: 10px; margin-bottom: 15px;">
-  <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นตอนล่าสุดอีกครั้ง</button>
-</div>
-
-<!-- 🕒 ฟังล่าสุด -->
-<div id="historyBox" class="history-box" style="display: none;"></div>
-
-    <!-- 📃 รายการตอน -->
-    <ul id="trackList" class="track-list"></ul>
-
-    <div class="footer-link">
-      <a href="https://www.dhamma-sutta.com" target="_blank">ธรรมสุตตะ Dhamma-Sutta.com</a>
-    </div>
+  <div class="main-content">
+    <h2>รายการเสียงธรรมะ</h2>
+    <p>ทดสอบระบบแสดงเนื้อหา...</p>
+    <p>เลื่อนลงกี่บรรทัดก็ได้ ตัวเล่นจะยังอยู่ด้านล่างเสมอ</p>
+    <p>....</p>
+    <!-- เนื้อหาอื่น ๆ -->
   </div>
 
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
-
-    let playlists;
-    let currentTracks = [];
-
-    const audio = document.getElementById("audioPlayer");
-    const trackList = document.getElementById("trackList");
-    const playlistSelect = document.getElementById("playlistSelect");
-    const searchInput = document.getElementById("searchInput");
-    const statInfo = document.getElementById("statInfo");
-    const historyBox = document.getElementById("historyBox");
-
-    fetch("playlists.json")
-      .then(response => response.json())
-      .then(data => {
-        playlists = data;
-        let totalTracks = 0;
-        Object.keys(playlists).forEach(name => {
-          const option = document.createElement("option");
-          option.value = name;
-          option.textContent = name;
-          playlistSelect.appendChild(option);
-          totalTracks += playlists[name].length;
-        });
-
-        statInfo.textContent = `🔸 ขณะนี้มีธรรมบรรยายทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
-
-        const lastTrack = localStorage.getItem("lastTrackUrl");
-        if (lastTrack) {
-          audio.src = lastTrack;
-        }
-
-        showHistory();
-      });
-
-    playlistSelect.addEventListener("change", function () {
-      const selected = this.value;
-      trackList.innerHTML = "";
-      currentTracks = playlists[selected] || [];
-      showFilteredTracks(searchInput.value);
-    });
-
-    searchInput.addEventListener("input", () => {
-      showFilteredTracks(searchInput.value);
-    });
-
-    function showFilteredTracks(keyword) {
-      trackList.innerHTML = "";
-      const filtered = currentTracks.filter(track =>
-        track.title.toLowerCase().includes(keyword.toLowerCase())
-      );
-      filtered.forEach(track => {
-        const li = document.createElement("li");
-        li.className = "track-item";
-
-        const btn = document.createElement("button");
-        btn.className = "track-button";
-        btn.textContent = `▶️ ${track.title}`;
-        btn.onclick = () => {
-          audio.src = track.url;
-          audio.play();
-          localStorage.setItem("lastTrackUrl", track.url);
-          saveHistory(track);
-          showHistory();
-        };
-
-        const shareBtn = document.createElement("button");
-        shareBtn.className = "share-button";
-        shareBtn.textContent = "🔗 แชร์";
-        shareBtn.onclick = () => {
-          navigator.clipboard.writeText(track.url);
-          alert("คัดลอกลิงก์แล้ว: " + track.url);
-        };
-
-        li.appendChild(btn);
-        li.appendChild(shareBtn);
-        trackList.appendChild(li);
-      });
-    }
-
-    function saveHistory(track) {
-      let history = JSON.parse(localStorage.getItem("history")) || [];
-      history = history.filter(t => t.url !== track.url);
-      history.unshift({ title: track.title, url: track.url });
-      if (history.length > 3) history.pop();
-      localStorage.setItem("history", JSON.stringify(history));
-    }
-
-    function showHistory() {
-      const history = JSON.parse(localStorage.getItem("history")) || [];
-      if (history.length === 0) {
-        historyBox.style.display = "none";
-        return;
-      }
-      historyBox.style.display = "block";
-      historyBox.innerHTML = "<strong>🕒 ฟังล่าสุด:</strong><ul style='padding-left: 20px;'>" +
-        history.map(item => `<li><a href="${item.url}" target="_blank">${item.title}</a></li>`).join('') +
-        "</ul>";
-    }
-
-    function resumeLastTrack() {
-      const lastTrack = localStorage.getItem("lastTrackUrl");
-      if (lastTrack) {
-        audio.src = lastTrack;
-        audio.play();
-      } else {
-        alert("ยังไม่มีรายการที่ฟังล่าสุด");
-      }
-    }
-  </script>
-  <!-- 🔊 Fixed Audio Player -->
-<div class="fixed-player">
-  <audio controls id="global-player" style="width: 100%;">
-    <source src="https://archive.org/download/dhamma-example/audio01.mp3" type="audio/mpeg">
-    เบราว์เซอร์ของคุณไม่รองรับเครื่องเล่นเสียง
-  </audio>
-</div>
+  <div class="audio-player-fixed">
+    <audio controls>
+      <source src="https://archive.org/download/sutta-dhamma/01.mp3" type="audio/mpeg">
+      เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+    </audio>
+  </div>
 
 </body>
 </html>
