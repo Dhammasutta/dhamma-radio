@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>สถานีฟังธรรมะ</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ธรรมสุตตะ | สถานีฟังธรรม</title>
   <style>
     body {
       margin: 0;
-      padding-bottom: 80px; /* เว้นพื้นที่ให้ player ไม่ทับเนื้อหา */
       font-family: sans-serif;
-      background-color: #fffaf0;
+      background: #fffaf0;
+      padding-bottom: 80px; /* เผื่อที่ให้ audio bar ล่าง */
     }
-
-    .main-content {
-      padding: 20px;
+    .container {
+      padding: 1rem;
     }
-
     .audio-player-fixed {
       position: fixed;
       bottom: 0;
       left: 0;
       width: 100%;
       background: #fff;
-      box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
-      padding: 10px 20px;
-      z-index: 9999;
+      border-top: 1px solid #ccc;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
+      padding: 0.5rem;
     }
-
     audio {
       width: 100%;
+      height: 40px;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>📻 สถานีฟังธรรมะ</h1>
+    <p>เลือกฟังตอนต่าง ๆ ด้านล่าง</p>
 
-  <div class="main-content">
-    <h2>รายการเสียงธรรมะ</h2>
-    <p>ทดสอบระบบแสดงเนื้อหา...</p>
-    <p>เลื่อนลงกี่บรรทัดก็ได้ ตัวเล่นจะยังอยู่ด้านล่างเสมอ</p>
-    <p>....</p>
-    <!-- เนื้อหาอื่น ๆ -->
+    <!-- ตัวอย่าง playlist -->
+    <ul>
+      <li><a href="#" onclick="playAudio('https://archive.org/download/001-samma-sankappo/001-SammaSankappo.mp3')">ตอนที่ ๑ สัมมาสังกัปโป</a></li>
+      <li><a href="#" onclick="playAudio('https://archive.org/download/002-samma-vaca/002-SammaVaca.mp3')">ตอนที่ ๒ สัมมาวาจา</a></li>
+      <li><a href="#" onclick="playAudio('https://archive.org/download/003-samma-kammanta/003-SammaKammanta.mp3')">ตอนที่ ๓ สัมมากัมมันตะ</a></li>
+    </ul>
   </div>
 
+  <!-- Player ที่ล่างจอ -->
   <div class="audio-player-fixed">
-    <audio controls>
-      <source src="https://archive.org/download/sutta-dhamma/01.mp3" type="audio/mpeg">
+    <audio id="main-player" controls>
+      <source src="" type="audio/mpeg">
       เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
     </audio>
   </div>
 
+  <script>
+    function playAudio(src) {
+      const player = document.getElementById('main-player');
+      player.src = src;
+      player.play();
+    }
+  </script>
 </body>
 </html>
