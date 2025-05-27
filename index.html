@@ -1,121 +1,174 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#fffaf0" />
-  <title>📻 สถานีธรรมะออนไลน์ | Dhamma Radio</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สถานีธรรมะออนไลน์ | Dhamma Radio</title>
+  <link rel="icon" href="favicon.png" />
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: "Sarabun", sans-serif;
       background-color: #fffaf0;
     }
     header {
-      background-color: #007bff;
-      color: white;
-      padding: 1rem;
+      background-color: #aad8ff;
+      color: #000;
       text-align: center;
+      padding: 1.5rem 1rem 1rem;
     }
-    .container {
-      padding: 1rem;
-      max-width: 800px;
-      margin: auto;
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
     }
-    .search {
+    header h2 {
+      margin: 0.2rem 0 0;
+      font-size: 1.2rem;
+      color: #003366;
+    }
+    .search-box {
       display: flex;
       justify-content: center;
-      margin-bottom: 1rem;
+      margin: 1.5rem auto;
     }
-    input[type="text"] {
-      width: 50%;
+    .search-box input {
       padding: 0.5rem;
       font-size: 1rem;
+      width: 80%;
+      max-width: 500px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
     }
     .playlist {
-      list-style: none;
-      padding: 0;
+      max-width: 700px;
+      margin: 0 auto 140px;
+      padding: 0 1rem;
     }
-    .playlist li {
-      padding: 0.5rem;
-      border-bottom: 1px solid #ccc;
-      cursor: pointer;
+    .track {
+      background-color: #fff5e6;
+      border: 1px solid #e2c799;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .audio-player {
+    .track-title {
+      font-size: 1rem;
+      color: #333;
+      flex-grow: 1;
+      margin-left: 0.5rem;
+    }
+    .track button {
+      margin-left: 1rem;
+    }
+    footer {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: #fff;
+      width: 100%;
+      background: #f5f5f5;
       border-top: 1px solid #ccc;
-      padding: 1rem;
-      box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem;
+      box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
     }
-    .stat {
+    audio {
+      width: 95%;
+    }
+    .info-bar {
       text-align: center;
-      margin-bottom: 1rem;
-      color: #333;
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>📻 สถานีธรรมะออนไลน์<br>รายการธรรมบรรยายตามพระไตรปิฎก</h1>
+    <h1>📻 สถานีธรรมะออนไลน์</h1>
+    <h2>รายการธรรมบรรยายตามพระไตรปิฎก</h2>
   </header>
-  <div class="container">
-    <div class="search">
-      <input type="text" id="searchBox" placeholder="ค้นหารายการธรรม...">
-    </div>
-    <div class="stat">
-      <span id="totalCount">กำลังโหลด...</span>
-    </div>
-    <ul class="playlist" id="playlist"></ul>
+
+  <div class="search-box">
+    <input type="text" id="search" placeholder="ค้นหารายการธรรมะ..." oninput="filterList()" />
   </div>
 
-  <div class="audio-player">
-    <audio id="audioPlayer" controls style="width: 100%">
+  <div class="info-bar" id="file-count">กำลังโหลด...</div>
+
+  <div class="playlist" id="playlist"></div>
+
+  <footer>
+    <audio controls id="audioPlayer">
       <source id="audioSource" src="" type="audio/mpeg">
-      เบราว์เซอร์ของคุณไม่รองรับเครื่องเล่นเสียง
+      Your browser does not support the audio element.
     </audio>
-  </div>
+  </footer>
 
   <script>
-    const searchBox = document.getElementById('searchBox');
-    const playlistElement = document.getElementById('playlist');
-    const audioPlayer = document.getElementById('audioPlayer');
-    const audioSource = document.getElementById('audioSource');
-    const totalCount = document.getElementById('totalCount');
+    const playlistElement = document.getElementById("playlist");
+    const audioPlayer = document.getElementById("audioPlayer");
+    const audioSource = document.getElementById("audioSource");
+    const fileCount = document.getElementById("file-count");
 
-    let playlistData = [];
+    const playlist = [
+      {
+        title: "ตอนที่ ๒๕ บทว่าด้วย สัมมาสังกัปโป ๑",
+        url: "https://archive.org/download/01-samma-ditthi/25-samma-sankappa-1.mp3"
+      },
+      {
+        title: "ตอนที่ ๒๖ บทว่าด้วย สัมมาสังกัปโป ๒",
+        url: "https://archive.org/download/01-samma-ditthi/26-samma-sankappa-2.mp3"
+      },
+      {
+        title: "ตอนที่ ๒๗ บทว่าด้วย สัมมาสังกัปโป ๓",
+        url: "https://archive.org/download/01-samma-ditthi/27-samma-sankappa-3.mp3"
+      },
+      {
+        title: "ตอนที่ ๒๘ บทว่าด้วย สัมมาสังกัปโป ๔",
+        url: "https://archive.org/download/01-samma-ditthi/28-samma-sankappa-4.mp3"
+      },
+      {
+        title: "ตอนที่ ๒๙ บทว่าด้วย สัมมาสังกัปโป ๕",
+        url: "https://archive.org/download/01-samma-ditthi/29-samma-sankappa-5.mp3"
+      }
+    ];
 
-    async function loadPlaylist() {
-      const response = await fetch('playlists.json');
-      playlistData = await response.json();
-      renderPlaylist(playlistData);
-      totalCount.innerText = `จำนวนตอนทั้งหมด ${playlistData.length} ตอน`;
-    }
+    function renderPlaylist() {
+      const query = document.getElementById("search").value.toLowerCase();
+      const filtered = playlist.filter(item => item.title.toLowerCase().includes(query));
+      fileCount.textContent = `ทั้งหมด ${filtered.length} ตอนธรรมะ`;
+      playlistElement.innerHTML = "";
 
-    function renderPlaylist(data) {
-      playlistElement.innerHTML = '';
-      data.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.title}`;
-        li.onclick = () => {
+      filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "track";
+
+        const playBtn = document.createElement("button");
+        playBtn.textContent = "▶";
+        playBtn.onclick = () => {
           audioSource.src = item.url;
           audioPlayer.load();
           audioPlayer.play();
         };
-        playlistElement.appendChild(li);
+
+        const title = document.createElement("span");
+        title.className = "track-title";
+        title.textContent = item.title;
+
+        div.appendChild(playBtn);
+        div.appendChild(title);
+
+        playlistElement.appendChild(div);
       });
     }
 
-    searchBox.addEventListener('input', () => {
-      const keyword = searchBox.value.toLowerCase();
-      const filtered = playlistData.filter(item => item.title.toLowerCase().includes(keyword));
-      renderPlaylist(filtered);
-    });
+    function filterList() {
+      renderPlaylist();
+    }
 
-    loadPlaylist();
+    window.onload = renderPlaylist;
   </script>
 </body>
 </html>
