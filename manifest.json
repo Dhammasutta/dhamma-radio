@@ -1,10 +1,12 @@
 {
-  "name": "สถานีฟังธรรม dhamma-radio",
-  "short_name": "dhamma-radio",
-  "start_url": "./index.html",
+  "name": "ธรรมสุตตะ",
+  "short_name": "DhamSutta",
+  "id": "/dhamma-radio/",
+  "start_url": "/dhamma-radio/",
   "display": "standalone",
   "background_color": "#fffaf0",
   "theme_color": "#fffaf0",
+  "description": "ฟังธรรมะบรรยายจากพระไตรปิฎก เลือกฟังได้ตามหมวดหมู่",
   "icons": [
     {
       "src": "https://raw.githubusercontent.com/Dhammasutta/dhamma-radio/refs/heads/main/images/icon-192x192.png",
@@ -18,3 +20,4 @@
     }
   ]
 }
+
