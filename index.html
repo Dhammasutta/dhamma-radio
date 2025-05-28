@@ -17,9 +17,7 @@
       color: #5a3e1b;
       padding: 20px;
       line-height: 1.6;
-      /* เพิ่ม padding-bottom เพื่อไม่ให้เนื้อหาถูกบังโดย fixed player + history */
-      /* ปรับค่าตามความสูงโดยประมาณของ fixed player และ history box ที่อาจแสดง */
-      padding-bottom: 220px; /* <<<<<<< ปรับค่านี้ลง เนื่องจากปุ่ม resume ถูกเอาออก */
+      padding-bottom: 220px; /* ปรับตามความสูงของ fixed player และ history box */
     }
     .container {
       max-width: 700px;
@@ -66,7 +64,7 @@
       border: 1px dashed #bbb;
       border-radius: 10px;
       padding: 15px;
-      margin-top: 10px; /* ระยะห่างจาก audio player */
+      margin-top: 10px;
     }
     .track-list {
       list-style: none;
@@ -116,7 +114,6 @@
       text-decoration: underline;
     }
 
-    /* --- START: CSS สำหรับ Fixed Bottom Player --- */
     .fixed-bottom-player-wrapper {
       position: fixed;
       bottom: 0;
@@ -131,27 +128,17 @@
       align-items: center;
       box-sizing: border-box;
     }
-
-    /* ปุ่ม resume ถูกเอาออกไปแล้ว ไม่จำเป็นต้องมี CSS ส่วนนี้อีก */
-    /* .fixed-bottom-player-wrapper .resume-button { ... } */
-    /* .fixed-bottom-player-wrapper .resume-button:hover { ... } */
-
     .fixed-bottom-player-wrapper audio {
       width: 100%;
       max-width: 700px;
-      /* เพิ่ม margin-bottom เล็กน้อยถ้าต้องการให้มีช่องว่างระหว่าง audio กับ history box */
-      /* margin-bottom: 10px; */
     }
-
     .fixed-bottom-player-wrapper .history-box {
         max-width: 700px;
         width: 100%;
         box-sizing: border-box;
         margin-bottom: 0;
-        margin-top: 10px; /* เพิ่ม margin-top เพื่อให้มีช่องว่างระหว่าง audio player กับ history box */
+        margin-top: 10px;
     }
-    /* --- END: CSS สำหรับ Fixed Bottom Player --- */
-
   </style>
 </head>
 <body>
@@ -176,9 +163,7 @@
       <source src="" type="audio/mpeg" />
       เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
     </audio>
-
     <div id="historyBox" class="history-box" style="display: none;"></div>
-
   </div>
 
   <script>
@@ -188,7 +173,7 @@
       });
     }
 
-    let playlists;
+    let playlists = {}; // Initialize playlists as an empty object
     let currentTracks = [];
 
     const audio = document.getElementById("audioPlayer");
@@ -199,41 +184,65 @@
     const historyBox = document.getElementById("historyBox");
 
     fetch("playlists.json")
-      .then(response => response.json())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then(data => {
-        playlists = data;
+        // ตรวจสอบว่า data ที่ได้มาเป็น object และไม่ใช่ array หรือ null
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          playlists = data;
+        } else {
+          console.error("รูปแบบข้อมูลจาก playlists.json ไม่ถูกต้อง หรือไฟล์ว่างเปล่า:", data);
+          statInfo.textContent = "⚠️ รูปแบบข้อมูลรายการธรรมะไม่ถูกต้อง";
+          playlists = {}; // กำหนดให้เป็น object ว่าง หากข้อมูลไม่ถูกต้อง
+        }
+
         let totalTracks = 0;
-        Object.keys(playlists).forEach(name => {
-          const option = document.createElement("option");
-          option.value = name;
-          option.textContent = name;
-          playlistSelect.appendChild(option);
-          totalTracks += playlists[name].length;
-        });
+        // ตรวจสอบให้แน่ใจว่า playlistSelect element มีอยู่จริงก่อนที่จะเพิ่ม options เข้าไป
+        if (playlistSelect) {
+          // ล้าง options เก่าออกก่อน (ยกเว้น option แรกที่เป็น default) - หากมีการโหลดซ้ำ
+          // while (playlistSelect.options.length > 1) {
+          // playlistSelect.remove(1);
+          // }
 
-        statInfo.textContent = `🔸 ขณะนี้มีธรรมบรรยายทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
+          Object.keys(playlists).forEach(name => {
+            // ตรวจสอบว่า key นั้นเป็นของ object จริงๆ และค่าของมันเป็น array
+            if (playlists.hasOwnProperty(name) && Array.isArray(playlists[name])) {
+              const option = document.createElement("option");
+              option.value = name;
+              option.textContent = name;
+              playlistSelect.appendChild(option);
+              totalTracks += playlists[name].length;
+            } else {
+              console.warn(`ข้อมูลเพลย์ลิสต์ '${name}' ไม่ถูกต้องและถูกข้ามไป`);
+            }
+          });
+        } else {
+          console.error("ไม่พบ element <select id='playlistSelect'> ในหน้า HTML");
+          statInfo.textContent = "⚠️ เกิดข้อผิดพลาดในการแสดงผลชุดธรรมะ";
+        }
 
-        // ไม่จำเป็นต้องโหลด lastTrackUrl มาใส่ audio.src โดยตรงอีกต่อไป
-        // เพราะไม่มีปุ่ม resume และการเล่นจาก history จะจัดการเอง
-        // const lastTrack = localStorage.getItem("lastTrackUrl");
-        // if (lastTrack) {
-        //   // audio.src = lastTrack; // ไม่ preload
-        // }
+        if (Object.keys(playlists).length > 0) {
+          statInfo.textContent = `🔸 ขณะนี้มีธรรมบรรยายทั้งหมด ${totalTracks} ตอนใน ${Object.keys(playlists).length} ชุด 🙏`;
+        } else if (!statInfo.textContent.startsWith("⚠️") && Object.keys(playlists).length === 0 && data) {
+            // ถ้า playlists เป็น object ว่างเปล่าจริงๆ (ไม่ใช่ error)
+            statInfo.textContent = "ℹ️ ไม่พบชุดรายการธรรมะในขณะนี้";
+        }
+        // หากเกิด error ก่อนหน้านี้ statInfo จะแสดงข้อความ error นั้น
 
-        showHistory();
+        showHistory(); // เรียก showHistory หลังจากโหลด playlists
+      })
+      .catch(error => {
+        console.error("เกิดข้อผิดพลาดในการโหลดหรือประมวลผล playlists.json:", error);
+        statInfo.textContent = "⚠️ เกิดข้อผิดพลาดในการโหลดรายการธรรมะ กรุณาตรวจสอบไฟล์ playlists.json และการเชื่อมต่อ";
+        playlists = {}; // ป้องกัน error ในส่วนอื่นที่อาจจะเรียกใช้ playlists
+        currentTracks = [];
+        // อาจจะแสดง trackList ว่างเปล่าหรือข้อความแจ้งผู้ใช้
+        trackList.innerHTML = "<li style='text-align:center; color:#888;'>ไม่สามารถโหลดรายการได้</li>";
       });
 
     playlistSelect.addEventListener("change", function () {
       const selected = this.value;
-      currentTracks = playlists[selected] || [];
-      searchInput.value = "";
-      showFilteredTracks("");
-    });
-
-    searchInput.addEventListener("input", () => {
-      showFilteredTracks(searchInput.value);
-    });
-
-    function showFilteredTracks(keyword) {
-      trackList.innerHTML = "";
-      const filtered = (current
