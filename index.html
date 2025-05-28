@@ -17,6 +17,8 @@
       color: #5a3e1b;
       padding: 20px;
       line-height: 1.6;
+      /* เพิ่ม padding-bottom เพื่อไม่ให้เนื้อหาถูกบังโดย fixed player */
+      padding-bottom: 150px; /* ปรับค่าตามความสูงของ fixed player */
     }
     .container {
       max-width: 700px;
@@ -64,6 +66,7 @@
       border-radius: 10px;
       padding: 15px;
       margin-top: 10px;
+      margin-bottom: 20px; /* เพิ่ม margin-bottom เพื่อให้มีช่องว่างก่อนถึงรายการ track */
     }
     .track-list {
       list-style: none;
@@ -99,10 +102,7 @@
       background: #f5f5f5;
       cursor: pointer;
     }
-    audio {
-      width: 100%;
-      margin-top: 25px;
-    }
+    /* ลบ audio style เดิมที่นี่ เนื่องจากจะย้ายไปจัดการใน fixed-bottom-player-wrapper */
     .footer-link {
       text-align: center;
       font-size: 14px;
@@ -116,8 +116,26 @@
     .footer-link a:hover {
       text-decoration: underline;
     }
-    .resume-button {
-      margin-bottom: 15px;
+    /* ลบ .resume-button style เดิมที่นี่ เนื่องจากจะย้ายไปจัดการใน fixed-bottom-player-wrapper */
+
+    /* --- START: CSS สำหรับ Fixed Bottom Player --- */
+    .fixed-bottom-player-wrapper {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: #fffef7; /* สีพื้นหลังคล้ายกับ container */
+      padding: 15px 20px;
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+      z-index: 1000; /* ให้อยู่เหนือองค์ประกอบอื่น */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    .fixed-bottom-player-wrapper .resume-button {
+      margin-bottom: 10px; /* ลด margin-bottom เดิมเล็กน้อย */
       padding: 8px 14px;
       border-radius: 6px;
       background: #fef2cc;
@@ -125,49 +143,47 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .resume-button:hover {
+    .fixed-bottom-player-wrapper .resume-button:hover {
       background: #fce7aa;
     }
+
+    .fixed-bottom-player-wrapper audio {
+      width: 100%;
+      max-width: 700px; /* ทำให้ audio player ไม่กว้างเกินไปบนจอใหญ่ */
+      /* margin-top: 0; เอา margin-top ของ audio เดิมออก */
+    }
+    /* --- END: CSS สำหรับ Fixed Bottom Player --- */
+
   </style>
 </head>
 <body>
   <div class="container">
     <h1></h1>
 
-    
-    <!-- 🔍 ค้นหาตอน -->
     <input type="text" id="searchInput" class="search-input" placeholder="🔍 ค้นหาชื่อตอน..." />
 
-    <!-- 🔽 เลือกชุด -->
     <select id="playlistSelect" class="playlist-select">
       <option value="">เลือกชุดธรรมะ...</option>
     </select>
 
-    <!-- 📊 สถิติ -->
     <div id="statInfo" class="stat-info">กำลังโหลดรายการ...</div>
 
-   <!-- 🎧 เครื่องเล่น -->
-<audio id="audioPlayer" controls>
-  <source src="" type="audio/mpeg" />
-  เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
-</audio>
+    <div id="historyBox" class="history-box" style="display: none;"></div>
 
-<!-- ▶️ ปุ่มเล่นต่อจากตอนล่าสุด (ย้ายมาไว้ใต้เครื่องเล่น) -->
-<div style="margin-top: 10px; margin-bottom: 15px;">
-  <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นตอนล่าสุดอีกครั้ง</button>
-</div>
-
-<!-- 🕒 ฟังล่าสุด -->
-<div id="historyBox" class="history-box" style="display: none;"></div>
-
-    <!-- 📃 รายการตอน -->
     <ul id="trackList" class="track-list"></ul>
 
     <div class="footer-link">
       <a href="https://www.dhamma-sutta.com" target="_blank">ธรรมสุตตะ Dhamma-Sutta.com</a>
     </div>
-  </div>
+  </div> <div class="fixed-bottom-player-wrapper">
+    <div> <button class="resume-button" onclick="resumeLastTrack()">▶️ เล่นตอนล่าสุดอีกครั้ง</button>
+    </div>
 
+    <audio id="audioPlayer" controls>
+      <source src="" type="audio/mpeg" />
+      เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+    </audio>
+  </div>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -202,7 +218,8 @@
 
         const lastTrack = localStorage.getItem("lastTrackUrl");
         if (lastTrack) {
-          audio.src = lastTrack;
+          // audio.src = lastTrack; // ไม่ต้อง preload ที่นี่แล้ว เพราะอาจทำให้เล่นอัตโนมัติเมื่อโหลดหน้า
+                                // แต่ถ้าต้องการให้แสดง source ไว้เฉยๆ ก็ใส่คืนได้
         }
 
         showHistory();
@@ -269,8 +286,17 @@
       }
       historyBox.style.display = "block";
       historyBox.innerHTML = "<strong>🕒 ฟังล่าสุด:</strong><ul style='padding-left: 20px;'>" +
-        history.map(item => `<li><a href="${item.url}" target="_blank">${item.title}</a></li>`).join('') +
+        history.map(item => `<li><a href="#" onclick="playFromHistory('${item.url}', '${item.title.replace(/'/g, "\\'")}')">${item.title}</a></li>`).join('') + // แก้ไขให้คลิกแล้วเล่น
         "</ul>";
+    }
+
+    function playFromHistory(url, title) {
+        audio.src = url;
+        audio.play();
+        localStorage.setItem("lastTrackUrl", url);
+        // หากต้องการให้การเล่นจาก history อัปเดต history ด้วย สามารถเรียก saveHistory ที่นี่
+        // saveHistory({title: title, url: url}); // แต่อาจจะซ้ำซ้อนถ้าไม่ต้องการดันรายการเดิมขึ้นบนสุดอีกครั้ง
+        showHistory(); // รีเฟรช history เผื่อมีการเปลี่ยนแปลง
     }
 
     function resumeLastTrack() {
