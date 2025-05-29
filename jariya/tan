@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>จริยาปิฎก | กลุ่มทานบารมี ๑๐ ชาติ ๘ ตอน</title>
+  <meta name="description" content="ฟังธรรมบรรยายชุดจริยาปิฎก กลุ่มทานบารมี ๑๐ ชาติ ๘ ตอน โดยพระอาจารย์สมบัติ">
+  <meta property="og:title" content="จริยาปิฎก | กลุ่มทานบารมี ๑๐ ชาติ ๘ ตอน">
+  <meta property="og:description" content="ฟังธรรมบรรยายชุดจริยาปิฎก กลุ่มทานบารมี ๑๐ ชาติ ๘ ตอน โดยพระอาจารย์สมบัติ">
+  <meta property="og:image" content="https://dhammasutta.github.io/images/dhamma-logo-512.png">
+  <link rel="icon" href="https://dhammasutta.github.io/images/dhamma-logo-512.png" type="image/png">
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #fffdf6;
+      color: #222;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #6b4c2f;
+    }
+    ul#audioList {
+      list-style: none;
+      max-width: 700px;
+      margin: 0 auto;
+      padding-left: 0;
+    }
+    ul#audioList li {
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+    }
+    ul#audioList button {
+      margin-right: 10px;
+      padding: 5px 12px;
+      background: #6b4c2f;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    audio {
+      display: block;
+      margin: 20px auto;
+      width: 100%;
+      max-width: 700px;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 จริยาปิฎก</h1>
+  <h2>กลุ่มทานบารมี ๑๐ ชาติ ๘ ตอน</h2>
+
+  <ul id="audioList"></ul>
+
+  <audio id="audioPlayer" controls>
+    <source src="">
+    เบราว์เซอร์ของคุณไม่รองรับการเล่นเสียง
+  </audio>
+
+  <script>
+    const episodes = [
+      { title: "ตอนที่ ๑ เหตุแสดงจริยาปิฏก", url: "https://archive.org/download/20250528_20250528_1234/๑. เหตุแสดงจริยาปิฏก ๑.mp3" },
+      { title: "ตอนที่ ๒ อกิตติดาบส จริยาที่ ๑", url: "https://archive.org/download/20250528_20250528_1234/๒. อกิตติดาบส จริยาที่ ๑.mp3" },
+      { title: "ตอนที่ ๓ สังขพราหมณ์ จริยาที่ ๒", url: "https://archive.org/download/20250528_20250528_1300/๓. สังขพราหมณ์ จริยาที่ ๒.mp3" },
+      { title: "ตอนที่ ๔ พระเจ้าธนญชัย และ มหาสุทัศน", url: "https://archive.org/download/dhamma-jariya-set/Jariya4.mp3" },
+      { title: "ตอนที่ ๕ มหาโควินทพราหมณ์ และ พระเจ้าเนมิราช", url: "https://archive.org/download/dhamma-jariya-set/Jariya5.mp3" },
+      { title: "ตอนที่ ๖ พระจันทกุมาร และ พระเจ้าสิวิราช", url: "https://archive.org/download/dhamma-jariya-set/Jariya6.mp3" },
+      { title: "ตอนที่ ๗ พระเวสสันดร จริยาที่ ๘", url: "https://archive.org/download/dhamma-jariya-set/Jariya7.mp3" },
+      { title: "ตอนที่ ๘ สสบัณฑิต จริยาที่ ๑๐ และ บทสรุป", url: "https://archive.org/download/dhamma-jariya-set/Jariya8.mp3" }
+    ];
+
+    const listContainer = document.getElementById("audioList");
+    const audioPlayer = document.getElementById("audioPlayer");
+
+    // Load last played from localStorage
+    const lastPlayed = localStorage.getItem("lastAudio");
+    if (lastPlayed) {
+      audioPlayer.src = lastPlayed;
+    }
+
+    episodes.forEach(item => {
+      const li = document.createElement("li");
+      const button = document.createElement("button");
+      button.textContent = "▶️ ฟัง";
+      button.onclick = () => {
+        audioPlayer.src = item.url;
+        audioPlayer.play();
+        localStorage.setItem("lastAudio", item.url);
+      };
+      const label = document.createElement("span");
+      label.textContent = item.title;
+      li.appendChild(button);
+      li.appendChild(label);
+      listContainer.appendChild(li);
+    });
+  </script>
+</body>
+</html>
