@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
+
+  <!-- โลโก้ + สีธีม + แชร์ -->
+<meta property="og:image" content="https://raw.githubusercontent.com/Dhammasutta/dhamma-radio/refs/heads/main/images/dhamma-logo-512.png" />
+<link rel="icon" href="https://raw.githubusercontent.com/Dhammasutta/dhamma-radio/refs/heads/main/images/dhamma-logo-512.png" />
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/Dhammasutta/dhamma-radio/refs/heads/main/images/dhamma-logo-512.png" />
+<meta name="theme-color" content="#a67847" />
+
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>สถานีธรรมะออนไลน์ - รายการธรรมบรรยายตามพระไตรปิฎก</title>
@@ -346,5 +353,23 @@
       }
     }
   </script>
+
+<script>
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.metadata = new MediaMetadata({
+    artwork: [
+      {
+        src: 'https://raw.githubusercontent.com/Dhammasutta/dhamma-radio/refs/heads/main/images/dhamma-logo-512.png',
+        sizes: '512x512',
+        type: 'image/png'
+      }
+    ]
+  });
+}
+</script>
+
+
+
+  
 </body>
 </html>
